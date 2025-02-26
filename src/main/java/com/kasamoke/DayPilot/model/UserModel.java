@@ -10,11 +10,14 @@ import java.util.UUID;
 public class UserModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String name;
     private String email;
     private String password;
+
+    public UserModel() {
+    }
 
     public UserModel(UUID id, String name, String email, String password) {
         this.id = id;
