@@ -33,12 +33,13 @@ public class JWTService {
 
     public String generateToken(String email) {
         Map<String, Object> claims = new HashMap<>();
+        long expirationTime = 604800000;
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(email)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 30))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(getKey())
                 .compact();
     }
