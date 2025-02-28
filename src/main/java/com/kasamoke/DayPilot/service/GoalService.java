@@ -57,10 +57,11 @@ public class GoalService {
             // Fetch all tracked goals from the repository
             List<GoalTrackerModel> trackedGoals = goalTrackerRepository.findAll();
             Set<UUID> trackedGoalIds = trackedGoals.stream()
+                    .filter(goalTracker -> goalTracker.getDate().isEqual(LocalDate.now()))
                     .map(GoalTrackerModel::getGoalId)
                     .collect(Collectors.toSet());
 
-            // Filter goals based on frequency, current date, start date, and exclude tracked goals
+            // Filter goals based on frequency, current date, start date, and exclude tracked goals with today's date
             return allGoals.stream()
                     .filter(this::isGoalScheduled)
                     .filter(goal -> !trackedGoalIds.contains(goal.getId()))
