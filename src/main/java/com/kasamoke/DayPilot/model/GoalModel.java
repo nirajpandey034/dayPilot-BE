@@ -25,11 +25,10 @@ public class GoalModel {
     @NotBlank(message = "Title is mandatory")
     private String title;
 
-    @NotBlank(message = "Description is mandatory")
+    // ✅ Removed @NotBlank to allow an empty string
     private String description;
 
     @NotNull(message = "Start date is mandatory")
-    @FutureOrPresent(message = "Start date must be today or in the future")
     private LocalDate startDate;
 
     @NotNull(message = "Target date is mandatory")
@@ -54,7 +53,7 @@ public class GoalModel {
     public GoalModel(UUID id, String title, String description, LocalDate startDate, LocalDate targetDate, Frequency frequency, boolean completionStatus, UserModel owner) {
         this.id = id;
         this.title = title;
-        this.description = description;
+        this.description = description; // Can be an empty string
         this.startDate = startDate;
         this.targetDate = targetDate;
         this.frequency = frequency;
@@ -91,7 +90,7 @@ public class GoalModel {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.description = description != null ? description : ""; // Ensure it's never null
     }
 
     public LocalDate getTargetDate() {
