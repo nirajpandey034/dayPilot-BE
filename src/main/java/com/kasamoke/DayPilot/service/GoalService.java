@@ -27,7 +27,7 @@ public class GoalService {
 
     public void createGoal(GoalRequest goalRequest) {
         try{
-            userRepository.findById(goalRequest.getOwnerId())
+            UserModel owner = userRepository.findById(goalRequest.getOwnerId())
                     .orElseThrow(() -> new RuntimeException("Owner not found"));
             GoalModel goal = new GoalModel();
             goal.setTitle(goalRequest.getTitle());
@@ -36,6 +36,7 @@ public class GoalService {
             goal.setStartDate(goalRequest.getStartDate());
             goal.setTargetDate(goalRequest.getTargetDate());
             goal.setCompletionStatus(goalRequest.isCompletionStatus());
+            goal.setOwner(owner);
             goalRepository.save(goal);
         } catch (Exception e) {
             throw new RuntimeException(e);
