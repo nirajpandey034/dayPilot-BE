@@ -53,8 +53,10 @@ public class GoalService {
     }
     public List<GoalModel> getScheduledGoals(UUID id) {
         try {
-            // Fetch all goals from the repository
-            List<GoalModel> allGoals = goalRepository.findAll();
+            // Fetch all goals from the repository for the given ownerId
+            List<GoalModel> allGoals = goalRepository.findAll().stream()
+                    .filter(goal -> goal.getOwner().getId().equals(id)) // Filter by ownerId
+                    .toList();
 
             // Fetch all tracked goals from the repository
             List<GoalTrackerModel> trackedGoals = goalTrackerRepository.findAll();
@@ -74,6 +76,7 @@ public class GoalService {
             throw new RuntimeException(e);
         }
     }
+
 
 
     public void deleteGoal(UUID id) {
