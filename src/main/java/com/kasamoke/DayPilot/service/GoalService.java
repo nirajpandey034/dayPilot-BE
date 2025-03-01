@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -62,16 +63,35 @@ public class GoalService {
                     .map(GoalTrackerModel::getGoalId)
                     .collect(Collectors.toSet());
 
-            // Filter goals based on frequency, current date, start date, and exclude tracked goals with today's date
+            // Filter goals based on frequency, current date, start date,
+            // exclude tracked goals with today's date, and exclude completed goals
             return allGoals.stream()
-                    .filter(this::isGoalScheduled)
-                    .filter(goal -> !trackedGoalIds.contains(goal.getId()))
+                    .filter(this::isGoalScheduled)  // Apply scheduling logic
+                    .filter(goal -> !trackedGoalIds.contains(goal.getId())) // Exclude tracked goals for today
+                    .filter(goal -> !goal.isCompletionStatus()) // Exclude completed goals
                     .collect(Collectors.toList());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+
+    public void deleteGoal(UUID id) {
+        try {
+            Optional<GoalModel> goal = goalRepository.findById(id);
+            goal.ifPresent(goalModel -> goalRepository.delete(goalModel));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void markCompleted(UUID id) {
+        GoalModel goal = goalRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Goal not found with ID: " + id));
+
+        goal.setCompletionStatus(true);
+        goalRepository.save(goal);
+    }
     private boolean isGoalScheduled(GoalModel goal) {
         LocalDate currentDate = LocalDate.now();
         LocalDate startDate = goal.getStartDate();

@@ -51,12 +51,30 @@ public class GoalController {
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteGoal(@PathVariable UUID id) {
+        try{
+            goalService.deleteGoal(id);
+            return ResponseEntity.status(200).body("Goal Deleted");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
 
     @PostMapping("/mark")
     public ResponseEntity<?> markGoal(@RequestBody GoalTrackerModel goalTrackerData) {
         try {
             goalTrackerService.markGoal(goalTrackerData);
             return ResponseEntity.status(200).body("Goal Marked");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+    @PutMapping("/mark/{id}")
+    public ResponseEntity<?> markCompleted(@PathVariable UUID id) {
+        try{
+            goalService.markCompleted(id);
+            return ResponseEntity.status(200).body("Goal Marked Completed");
         } catch (Exception e) {
             return ResponseEntity.status(500).body(e.getMessage());
         }
